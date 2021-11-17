@@ -29,7 +29,7 @@ public class FirebaseController {
 
     @PostConstruct
     private void initFirestore() throws IOException {
-        InputStream serviceAccount = new ByteArrayInputStream(getProperty(FIREBASE_KEY).getBytes(UTF_8));
+        InputStream serviceAccount = new ByteArrayInputStream(System.getenv().get(FIREBASE_KEY).getBytes(UTF_8));
         GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
 
         FirebaseOptions options = FirebaseOptions.builder()
