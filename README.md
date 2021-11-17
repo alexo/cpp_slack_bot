@@ -25,6 +25,10 @@ If you're going to use a database, ensure you have a local `.env` file that read
 JDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/java_database_name
 ```
 
+## Firebase integration
+
+Run the application locally with the `-DfirebaseKey=[...]` argument.
+
 ## Deploying to Heroku
 
 ```sh

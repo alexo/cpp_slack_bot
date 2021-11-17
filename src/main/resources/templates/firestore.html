@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'firestore')}">
+
+<body>
+
+
+<div class="container">
+    <h1>Firestore Collection</h1>
+    <ul th:each="record : ${firestoreDocs}">
+        <li th:text="${record}"/>
+    </ul>
+</div>
+
+</body>
+</html>
