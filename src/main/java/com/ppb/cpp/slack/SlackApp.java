@@ -6,6 +6,18 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SlackApp {
+
+    //integrate with PPH
+    //public bot reply
+    //use case: promo summary (dedicated command)
+    //locally use own command
+    //integrate firestore (define pph, endpoint)
+    //how to secure slack bot & pph communication. (oath)
+    //use case: stats
+    //use case: for promos about to expire
+    //use case: for promos reaching optin limit threshold
+    //
+
     @Bean
     public App initSlackApp() {
         final var app = new App();

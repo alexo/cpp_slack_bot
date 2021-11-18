@@ -16,9 +16,6 @@
 
 package com.ppb.cpp;
 
-import com.slack.api.bolt.App;
-import com.slack.api.bolt.jetty.SlackAppServer;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
