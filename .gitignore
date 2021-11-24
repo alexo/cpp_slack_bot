@@ -10,3 +10,4 @@ docs/tmp/
 docs/java-getting-started/
 docs/deploying-spring-boot-apps/
 .mvn/wrapper/maven-wrapper.jar
+config/*

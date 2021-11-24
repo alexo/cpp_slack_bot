@@ -2,11 +2,9 @@ package com.ppb.cpp.client.pph;
 
 import io.vavr.control.Try;
 import java.util.List;
-import org.openapitools.client.ApiException;
 import org.openapitools.client.api.PromotionApi;
 import org.openapitools.client.model.Promotion;
 import org.openapitools.client.model.PromotionsRequest;
-import org.openapitools.client.model.PromotionsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
