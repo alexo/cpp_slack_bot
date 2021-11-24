@@ -1,0 +1,992 @@
+
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Promotion API"
+  },
+  "host": "mypromos.betfair.com",
+  "basePath": "/api/customisedPromotions",
+  "schemes": [
+    "https"
+  ],
+  "tags": [
+    {
+      "name": "promotion",
+      "description": "A promotion resource (holds attributes that can be shown to the customer)."
+    }
+  ],
+  "paths": {
+    "/retrieve": {
+      "post": {
+        "tags": [
+          "promotion"
+        ],
+        "summary": "Retrieves available customer specific promotions for specified container identifiers formatted in HTML markup.",
+        "operationId": "retrieve",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "retrievePromotionsRequest",
+            "required": true,
+            "description": "details required for retrieving promotions",
+            "schema": {
+              "$ref": "#/definitions/RetrievePromotionsRequest"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of promotions that are available for the customer",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/retrieveStructured": {
+      "post": {
+        "tags": [
+          "promotion"
+        ],
+        "summary": "Retrieves available customer specific promotions for specified container identifiers, structured by their properties, without any HTML markup.",
+        "operationId": "retrieveStructured",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "retrievePromotionsRequest",
+            "required": true,
+            "description": "details required for retrieving promotions",
+            "schema": {
+              "$ref": "#/definitions/RetrievePromotionsRequest"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of promotions that are available for the customer",
+            "schema": {
+              "$ref": "#/definitions/RetrievePromotionsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/retrievePromotions": {
+      "post": {
+        "tags": [
+          "promotion"
+        ],
+        "summary": "Retrieves promotions for specified promo codes identifiers.",
+        "operationId": "retrievePromotions",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "PromotionsRequest",
+            "required": true,
+            "description": "details required for retrieving promotions",
+            "schema": {
+              "$ref": "#/definitions/PromotionsRequest"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of promotions",
+            "schema": {
+              "$ref": "#/definitions/PromotionsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/optIn": {
+      "post": {
+        "tags": [
+          "promotion"
+        ],
+        "summary": "Perform the opt in operation on a promotion.",
+        "operationId": "optIn",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "OptInDetails",
+            "required": true,
+            "description": "The request encapsulating data necessary to be validated and used to perform the opt in operation",
+            "schema": {
+              "$ref": "#/definitions/OptInDetails"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The status of the optIn request",
+            "schema": {
+              "$ref": "#/definitions/OptInResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "OptInDetails": {
+      "required": [
+        "promotionCode",
+        "attemptId"
+      ],
+      "properties": {
+        "promotionCode": {
+          "type": "string",
+          "description": "The code which uniquely identifies a promotion."
+        },
+        "attemptId": {
+          "type": "string",
+          "description": "The optIn operation identifier which uniquely identifies an optIn transaction."
+        },
+        "optInParams": {
+          "$ref": "#/definitions/OptInParams"
+        }
+      }
+    },
+    "OptInParams": {
+      "properties": {
+        "optionParams": {
+          "$ref": "#/definitions/OptionParams"
+        },
+        "buyInParams": {
+          "$ref": "#/definitions/BuyInParams"
+        }
+      }
+    },
+    "OptionParams": {
+      "required": [
+        "optionId"
+      ],
+      "properties": {
+        "optionId": {
+          "type": "string",
+          "description": "The id of the opt-in option selected.The id of the opt-in option selected."
+        }
+      }
+    },
+    "BuyInParams": {
+      "required": [
+        "amount"
+      ],
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The amount value bought in the promotion by the customer."
+        }
+      }
+    },
+    "OptInResponse": {
+      "required": [
+        "success",
+        "errorCode"
+      ],
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "The result of the operation."
+        },
+        "errorCode": {
+          "type": "string",
+          "description": "Reason for failure when success=false. See ErrorCode for a list of possible values."
+        },
+        "claimsLeft": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of claims left for the current promotion. It's not null for a success response, and null in case of failed response."
+        }
+      }
+    },
+    "RetrievePromotionsRequest": {
+      "description": "Header info: For logged-out requests, X-IP header must be set with IP of the customer, in order to filter only promotions available for the country from which the request was made.",
+      "required": [
+        "brand",
+        "clientId",
+        "jurisdiction"
+      ],
+      "properties": {
+        "brand": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": "string",
+          "description": "Identifier of the client application."
+        },
+        "locale": {
+          "type": "string",
+          "description": "ISO 639 alpha-2 or alpha-3 language code. Note: a promotion has 'default' content and localised content (other languages). If no content is available for the required language, the default one is returned."
+        },
+        "metadata": {
+          "type": "boolean",
+          "description": "Indicates whether to return a simplified version of the retrieved Promotion objects."
+        },
+        "jurisdiction": {
+          "type": "string",
+          "description": "Used when sessionToken is missing. If a valid sessionToken is provided it will override this value."
+        },
+        "accountId": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Deprecated, please use sessionToken instead",
+          "deprecated": "true"
+        },
+        "placements": {
+          "type": "array",
+          "description": "Identifiers of the areas which are expected to hold promotions. This field is deprecated in favor of the containers field.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "containers": {
+          "type": "array",
+          "description": "Identifiers of the areas which are expected to hold promotions.",
+          "items": {
+            "$ref": "#/definitions/Container"
+          }
+        }
+      }
+    },
+    "RetrievePromotionsResponse": {
+      "required": [
+        "success",
+        "errorCode",
+        "promoPlacements"
+      ],
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "The result of the operation."
+        },
+        "errorCode": {
+          "type": "string",
+          "description": "Reason for failure when success=false. See ErrorCode for a list of possible values."
+        },
+        "promoPlacements": {
+          "type": "array",
+          "description": "Available promotions for the requested placements.",
+          "items": {
+            "$ref": "#/definitions/PromoPlacement"
+          }
+        }
+      }
+    },
+    "PromotionsRequest": {
+      "description": "Contains details required for retrieving promotions by their promo codes.",
+      "required": [
+        "clientId"
+      ],
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "description": "Identifier of the client application."
+        },
+        "locale": {
+          "type": "string",
+          "description": "ISO 639 alpha-2 or alpha-3 language code. Note: a promotion has 'default' content and localised content (other languages). If no content is available for the required language, the default one is returned."
+        },
+        "currencyCode": {
+          "type": "string",
+          "description": "the ISO 4217 code of the currency, used to replace the currency tags from promotion attributes"
+        },
+        "promoCodes": {
+          "type": "array",
+          "description": "Identifiers of the promotions.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "PromotionsResponse": {
+      "required": [
+        "success",
+        "errorCode",
+        "promotions"
+      ],
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "The result of the operation."
+        },
+        "errorCode": {
+          "type": "string",
+          "description": "Reason for failure when success=false. See ErrorCode for a list of possible values."
+        },
+        "promotions": {
+          "type": "array",
+          "description": "Contains the promotions for the requested promo codes.",
+          "items": {
+            "$ref": "#/definitions/Promotion"
+          }
+        }
+      }
+    },
+    "Promotion": {
+      "required": [
+        "promoCode"
+      ],
+      "properties": {
+        "promoCode": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "termsAndConditions": {
+          "$ref": "#/definitions/TermsAndConditions"
+        },
+        "moreInfo": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        },
+        "textColour": {
+          "type": "string",
+          "description": "Contains the hex of the colour used for the text on the promotion image."
+        },
+        "images": {
+          "type": "array",
+          "description": "Contains the list of images available for current promotion.",
+          "items": {
+            "$ref": "#/definitions/Image"
+          }
+        },
+        "callToAction": {
+          "$ref": "#/definitions/CallToAction"
+        },
+        "theme": {
+          "type": "string",
+          "description": "Indicates the theme used to customize the way this promotion is displayed."
+        },
+        "brand": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "description": "Contains the list of tags relevant for this promo",
+          "items": {
+            "type": "string"
+          }
+        },
+        "products": {
+          "type": "array",
+          "description": "Contains the list of products relevant for this promo",
+          "items": {
+            "type": "string"
+          }
+        },
+        "currency": {
+          "type": "string",
+          "description": "The currency symbol/code displayed to the customer."
+        },
+        "currencies": {
+          "type": "array",
+          "description": "Contains the list of currencies available for current promotion.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "Indicates the state of the promotion (whether it's active, upcoming, expired)."
+        },
+        "registrationCode": {
+          "type": "string",
+          "description": "Registration code used during registration through this promotion."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Represents the end date of the promotion"
+        },
+        "fulfillmentEndDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Indicates the date by which the user can fulfill the promotion criteria."
+        },
+        "showTimeLeft": {
+          "type": "boolean",
+          "description": "Indicates if the time left for the promotion should be displayed."
+        },
+        "customerPromotionState": {
+          "$ref": "#/definitions/CustomerPromotionState"
+        },
+        "additionalAttributes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Map containing additional attributes specific for a promotion. This should contain display texts, each identified by an unique key."
+        }
+      }
+    },
+    "PromoPlacement": {
+      "description": "Contains available promotions for an identifier. Each identifier requested by the client (in the RetrievePromotionsRequest#placements field) will have a corresponding PromoPlacement.",
+      "required": [
+        "placementId"
+      ],
+      "properties": {
+        "placementId": {
+          "type": "string",
+          "description": "The identifier provided by the client."
+        },
+        "promotions": {
+          "type": "array",
+          "description": "Promotions available for this placementId. If no content is available this list will be empty.",
+          "items": {
+            "$ref": "#/definitions/Promotion"
+          }
+        },
+        "totalPromotions": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The total number of promotions."
+        }
+      }
+    },
+    "Image": {
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "height": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CustomerPromotionState": {
+      "description": "Encapsulates various details regarding customer-promotion relationship",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "description": "A list of steps describing the customer journey in this promotion.",
+          "items": {
+            "$ref": "#/definitions/Step"
+          }
+        },
+        "eligibility": {
+          "$ref": "#/definitions/Eligibility"
+        },
+        "criteriaState": {
+          "$ref": "#/definitions/CriteriaState"
+        },
+        "reward": {
+          "$ref": "#/definitions/RewardDefinition"
+        },
+        "games": {
+          "$ref": "#/definitions/GamesDefinition"
+        },
+        "promoStateExpiryDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Represents the expiration date of the promotion for the customer."
+        },
+        "fulfillmentEndDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Indicates the date by which the user can fulfill the promotion criteria."
+        },
+        "optInState": {
+          "type": "string",
+          "description": "OptInState for a user within a promotion. Possible values: {PROMOTION_NOT_ACTIVE, NOT_OPTED_IN, ONGOING, REWARD_AWARDED, COMPLETED, LOST, REMOVED, EXPIRED}."
+        }
+      }
+    },
+    "Step": {
+      "description": "Encapsulate the details of a single step. A step describes the information which help customer to progress through promotion.",
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "Human readable action of the step,"
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Flag indicating if the step was completed. Some steps are not necessarily actionable by customer (ex: waiting for bets to settle)."
+        },
+        "status": {
+          "type": "string",
+          "description": "The nuance of the completed flag. Possible values: {WAITING}"
+        }
+      }
+    },
+    "Eligibility": {
+      "description": "Data type holding various eligibility details",
+      "properties": {
+        "canOptIn": {
+          "type": "boolean",
+          "description": "Flag indicating that the customer can opt in now"
+        },
+        "canConsent": {
+          "type": "boolean",
+          "description": "Flag indicating that the customer can give consent in regards to being opted in. This is not the same as 'canOptIn' since it represents the deliberate action of the customer to opt in or consent to an opt in performed by the system (ex: Promotions with certain auto opt in configurations and where customer consent is required for reward awarding). However, in certain scenarios, 'canOptIn' and 'canConsent' may refer to the same aspect (ex:Promotions in which the customer can opt in only manually, as the opt in in this case can only result from the customer's deliberate action)"
+        },
+        "eligible": {
+          "type": "boolean",
+          "description": "Flag indicating that the customer is eligible. This is not the same as 'canOptIn', since a customer can be eligible but cannot opt in (ex: already opted in)"
+        }
+      }
+    },
+    "CriteriaState": {
+      "properties": {
+        "fulfilled": {
+          "type": "boolean",
+          "description": "Flag indicating that this criteria is fulfilled"
+        },
+        "ratio": {
+          "type": "number",
+          "format": "double",
+          "description": "The fulfillment ratio indicating the progress for this criteria. This value is within [0..1] range."
+        },
+        "category": {
+          "type": "string",
+          "description": "A classifier of the criteria. Possible values: {GAUGE, VALUE}"
+        },
+        "tierDefinition": {
+          "description": "Optional attribute which is used for tiered promotions",
+          "$ref": "#/definitions/TierDefinition"
+        },
+        "children": {
+          "type": "array",
+          "description": "A list of criteria states defined by a compound CriteriaState.",
+          "items": {
+            "$ref": "#/definitions/CriteriaState"
+          }
+        },
+        "params": {
+          "$ref": "#/definitions/CriteriaParams"
+        }
+      }
+    },
+    "TierDefinition": {
+      "description": "The datatype used to define a tier (either criteria or reward).",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "CriteriaParams": {
+      "properties": {
+        "gauge": {
+          "$ref": "#/definitions/GaugeParams"
+        },
+        "optInOptions": {
+          "$ref": "#/definitions/OptInOptionsParams"
+        },
+        "value": {
+          "$ref": "#/definitions/ValueParams"
+        },
+        "enhancedSelection": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EnhancedSelection"
+          }
+        }
+      }
+    },
+    "GaugeParams": {
+      "properties": {
+        "current": {
+          "type": "number",
+          "format": "double"
+        },
+        "target": {
+          "type": "number",
+          "format": "double"
+        },
+        "minValue": {
+          "type": "number",
+          "format": "double"
+        },
+        "type": {
+          "type": "string",
+          "description": "Describe the type of the contained params."
+        }
+      }
+    },
+    "OptInOptionsParams": {
+      "properties": {
+        "available": {
+          "type": "array",
+          "description": "A list of available options from which the customer must choose in order to optin",
+          "items": {
+            "$ref": "#/definitions/OptInOption"
+          }
+        },
+        "selected": {
+          "$ref": "#/definitions/OptInOption",
+          "description": "Option selected by the customer from the list of available options upon optin"
+        }
+      }
+    },
+    "OptInOption": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Internal Id of the option that should be displayed to the customer"
+        },
+        "value": {
+          "type": "string",
+          "description": "Description of the option that should be displayed to the customer"
+        }
+      }
+    },
+    "ValueParams": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Describe the type of the value. Possible values are: {BOOL, NUMBER, STRING}"
+        },
+        "value": {
+          "type": "string",
+          "description": "Actual value whose type is described by the 'type' field"
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of this value"
+        }
+      }
+    },
+    "EnhancedSelection": {
+      "properties": {
+        "selection": {
+          "description": "A pair containing a selection with it's corresponding enhanced odd",
+          "$ref": "#/definitions/Selection"
+        },
+        "enhancedOdd": {
+          "type": "number",
+          "format": "double",
+          "description": "Enhanced odd corresponding to the selection."
+        }
+      }
+    },
+    "Selection": {
+      "properties": {
+        "marketId": {
+          "type": "string",
+          "description": "A market id"
+        },
+        "selectionId": {
+          "type": "string",
+          "description": "A selection id on the specified market id"
+        }
+      }
+    },
+    "RewardDefinition": {
+      "description": "Encapsulates the full reward description.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "A short human readable description of this reward"
+        },
+        "value": {
+          "type": "number",
+          "format": "double",
+          "description": "The value of the reward if it has a fixed value."
+        },
+        "variableAmount": {
+          "description": "Attribute used if the reward has a variable value.",
+          "$ref": "#/definitions/VariableAmount"
+        },
+        "tierDefinition": {
+          "description": "Optional attribute which is used for tiered rewards",
+          "$ref": "#/definitions/TierDefinition"
+        },
+        "awarded": {
+          "type": "boolean",
+          "description": "Flag indicating that this reward was awarded to customer."
+        },
+        "state": {
+          "description": "Optional attribute which is used to describe reward state in case it was awarded.",
+          "$ref": "#/definitions/RewardState"
+        },
+        "products": {
+          "type": "array",
+          "description": "Optional attribute which is used to indicate the products on which the reward can be used.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "children": {
+          "type": "array",
+          "description": "A list of rewards.",
+          "items": {
+            "$ref": "#/definitions/RewardDefinition"
+          }
+        },
+        "customAttributes": {
+          "description": "Optional attributes which are used to indicate specific reward particularities.",
+          "$ref": "#/definitions/CustomAttributes"
+        }
+      }
+    },
+    "CustomAttributes": {
+      "properties": {
+        "eligibilityReward": {
+          "$ref": "#/definitions/EligibilityReward"
+        },
+        "variableProductReward": {
+          "$ref": "#/definitions/VariableProductReward"
+        },
+        "freeRoundsReward": {
+          "$ref": "#/definitions/FreeRoundsReward"
+        }
+      }
+    },
+    "EligibilityReward": {
+      "description": "Optional attribute that encapsulates specific eligibility reward particularities.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "An id that unique identifies this reward"
+        },
+        "promoCode": {
+          "type": "string",
+          "description": "A promo code that unique identifies promotion for which the customer will be eligible"
+        }
+      }
+    },
+    "VariableProductReward": {
+      "description": "Optional attribute that encapsulates specific variable product reward particularities.",
+      "properties": {
+        "productToRewards": {
+          "type": "object",
+          "description": "A map that contains products and associated rewards.",
+          "additionalProperties": {
+            "$ref": "#/definitions/RewardDefinition"
+          }
+        }
+      }
+    },
+    "FreeRoundsReward": {
+      "description": "Optional attribute that encapsulates specific free rounds reward particularities.",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/RoundType",
+          "description": "The type of free rounds"
+        }
+      }
+    },
+    "RewardState": {
+      "properties": {
+        "ratio": {
+          "type": "number",
+          "format": "double",
+          "description": "The fulfillment ratio indicating the progress for this reward. This value is within [0..1] range."
+        },
+        "params": {
+          "$ref": "#/definitions/RewardParams"
+        }
+      }
+    },
+    "RewardParams": {
+      "properties": {
+        "gauge": {
+          "$ref": "#/definitions/GaugeParams"
+        },
+        "value": {
+          "$ref": "#/definitions/ValueParams"
+        }
+      }
+    },
+    "GamesDefinition": {
+      "description": "Games details that provides information about included/excluded games and providers in regards with current customerPromotionState status.",
+      "properties": {
+        "games": {
+          "type": "array",
+          "description": "Contains the list of eligible games.",
+          "items": {
+            "$ref": "#/definitions/Game"
+          }
+        },
+        "gamesRestriction": {
+          "$ref": "#/definitions/RestrictionType"
+        },
+        "gamesProviders": {
+          "type": "array",
+          "description": "Contains the list of games providers.",
+          "items": {
+            "$ref": "#/definitions/GamesProvider"
+          }
+        },
+        "providerRestriction": {
+          "$ref": "#/definitions/RestrictionType"
+        }
+      }
+    },
+    "Game": {
+      "properties": {
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "GamesProvider": {
+      "properties": {
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "RestrictionType": {
+      "properties": {
+        "value": {
+          "description": "Type of the restrictions set. Possible values: {INCLUDE,EXCLUDE}.",
+          "type": "string"
+        }
+      }
+    },
+    "TermsAndConditions": {
+      "properties": {
+        "full": {
+          "type": "string"
+        },
+        "summarized": {
+          "type": "string"
+        },
+        "smallPrint": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "CallToAction": {
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "action":
+        {
+          "type": "string"
+        }
+      }
+    },
+    "ErrorCode": {
+      "type": "string",
+      "description": "Reasons for operation failure.",
+      "enum": [
+        "INTERNAL_ERROR",
+        "VALIDATION_ERROR"
+      ]
+    },
+    "Container": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "aspectRatio": {
+          "type": "string"
+        },
+        "context": {
+          "$ref": "#/definitions/Context"
+        },
+        "page": {
+          "type": "integer"
+        }
+      }
+    },
+    "Context": {
+      "properties": {
+        "products": {
+          "type": "array",
+          "description": "Product for which relevant promos should be returned",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "description": "List of tags to filter on",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limit": {
+          "type": "integer",
+          "description": "The number of promotions to return"
+        }
+      }
+    },
+    "RoundType": {
+      "type": "string",
+      "description": "The type of free rounds available for a free rounds reward",
+      "enum": [
+        "FREE_SPINS",
+        "WIN_SPINS"
+      ]
+    },
+    "VariableAmount": {
+      "description": "Attribute used to encapsulate information of variable value rewards.",
+      "properties": {
+        "maxAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Defines the capping amount. If this parameter is not used or there is no value associated for a currency, no capping is applied"
+        },
+        "ratio": {
+          "type": "number",
+          "format": "double",
+          "description": "A value ranging from 0 to 1. When this value is 1 or not set at all, the computed amount is left unchanged"
+        }
+      }
+    }
+  }
+}
