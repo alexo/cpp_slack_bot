@@ -18,6 +18,7 @@ public class SlackApp {
     public App initSlackApp() {
         final var app = new App();
         app.command("/cpp-bot", (req, ctx) -> cppBotCommand.handle(req));
+        app.command("/cpp-bot-rares", (req, ctx) -> cppBotCommand.handle(req));
         return app;
     }
 }

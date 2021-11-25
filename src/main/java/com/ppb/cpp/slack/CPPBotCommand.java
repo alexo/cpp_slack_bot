@@ -5,6 +5,8 @@ import com.slack.api.app_backend.slash_commands.payload.SlashCommandPayload;
 import com.slack.api.bolt.context.builtin.SlashCommandContext;
 import com.slack.api.bolt.request.builtin.SlashCommandRequest;
 import com.slack.api.bolt.response.Response;
+import com.slack.api.model.block.element.ButtonElement;
+import com.slack.api.model.block.element.ImageElement;
 import io.vavr.control.Try;
 import java.util.List;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import static com.slack.api.model.block.Blocks.*;
 import static com.slack.api.model.block.Blocks.section;
 import static com.slack.api.model.block.composition.BlockCompositions.markdownText;
+import static com.slack.api.model.block.composition.BlockCompositions.plainText;
 import static io.vavr.API.*;
 import static java.lang.String.format;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -61,11 +64,28 @@ public class CPPBotCommand {
     }
 
     private Response promoCodeResponse(final SlashCommandRequest req) {
+        var promo = pphClient.retrievePromotions(req.getPayload().getText().split(" ")[1]);
         return req.getContext().ack(res -> res.responseType("in_channel")
             .blocks(asBlocks(
-                section(section -> section
-                    .text(markdownText("*Title:*"))
-                    .text(markdownText(pphClient.retrievePromotions(req.getPayload().getText().split(" ")[1]).getTitle()))
-                ))));
+                section(section -> {
+                    section.text(markdownText("*Name:* " + promo.getName()));
+                    section.accessory(ButtonElement.builder()
+                        .text(plainText("View"))
+                        .value(promo.getTermsAndConditions().getUrl())
+                        .url(promo.getTermsAndConditions().getUrl())
+                        .build());
+                    return section;
+                }),
+                section(section -> {
+                    section.text(markdownText("*Description:* " + promo.getDescription()));
+                    section.accessory(ImageElement.builder()
+                        .imageUrl(promo.getImages().get(4).getUrl())
+                        .altText(promo.getPromoCode())
+                        .build());
+                    return section;
+                }),
+                section(section -> section.text(markdownText("*Brand:* " + promo.getBrand())))
+                )
+            ));
     }
 }
