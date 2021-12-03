@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SlackApp {
     @Autowired
-    private CPPBotCommand cppCommand;
+    private CPPCommand cppCommand;
 
     @Bean
     public App initSlackApp() {

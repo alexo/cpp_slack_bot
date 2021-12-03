@@ -1,6 +1,6 @@
 package com.ppb.cpp.client.pph;
 
-import com.ppb.cpp.slack.CPPBotCommand;
+import com.ppb.cpp.slack.CPPCommand;
 import io.vavr.control.Try;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class PPHClient {
-    private static final Logger LOG = getLogger(CPPBotCommand.class);
+    private static final Logger LOG = getLogger(CPPCommand.class);
     @Autowired
     private PromotionApi client;
 
