@@ -6,13 +6,11 @@ import com.slack.api.bolt.request.builtin.SlashCommandRequest;
 import com.slack.api.bolt.response.Response;
 import com.slack.api.model.block.element.ButtonElement;
 import com.slack.api.model.block.element.ImageElement;
-import org.jetbrains.annotations.NotNull;
 import org.openapitools.client.model.Promotion;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import static com.slack.api.model.block.Blocks.*;
@@ -28,7 +26,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @Component
 public class CPPBotCommand {
-    private static final Logger LOG = getLogger(SlackApp.class);
+    private static final Logger LOG = getLogger(CPPBotCommand.class);
 
     @Autowired
     private PPHClient pphClient;
@@ -40,7 +38,7 @@ public class CPPBotCommand {
         }
 
         public boolean is(final String instruction) {
-            return payload.getText().matches(format("^%s\\b.*", instruction));
+            return payload.getText().matches(format("(?i)^%s\\b.*", instruction));
         }
     }
 
@@ -67,9 +65,9 @@ public class CPPBotCommand {
 
     private Response promoCodeResponse(final SlashCommandRequest req) {
         return findPromoCode(req)
-                .map(pphClient::retrievePromotions)
+                .flatMap(pphClient::findPromotion)
                 .map(promo -> responseForPromo(req, promo))
-                .orElseGet(() -> req.getContext().ack(":wave: Unknown promoCode. Try *help* for available instructions.."));
+                .orElseGet(() -> req.getContext().ack(format(":wave: Unknown promoCode. Try *help* for available instructions..")));
     }
 
     private Response responseForPromo(final SlashCommandRequest req, final Promotion promo) {
