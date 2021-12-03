@@ -2,19 +2,15 @@ package com.ppb.cpp.slack;
 
 import com.ppb.cpp.client.pph.PPHClient;
 import com.slack.api.app_backend.slash_commands.payload.SlashCommandPayload;
-import com.slack.api.bolt.context.builtin.SlashCommandContext;
 import com.slack.api.bolt.request.builtin.SlashCommandRequest;
 import com.slack.api.bolt.response.Response;
 import com.slack.api.model.block.element.ButtonElement;
 import com.slack.api.model.block.element.ImageElement;
-import io.vavr.control.Try;
-import java.util.List;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.slack.api.model.block.Blocks.*;
-import static com.slack.api.model.block.Blocks.section;
 import static com.slack.api.model.block.composition.BlockCompositions.markdownText;
 import static com.slack.api.model.block.composition.BlockCompositions.plainText;
 import static io.vavr.API.*;
