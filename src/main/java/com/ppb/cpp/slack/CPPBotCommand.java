@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static com.slack.api.model.block.Blocks.*;
@@ -97,7 +98,7 @@ public class CPPBotCommand {
     private Optional<String> findPromoCode(final SlashCommandRequest req) {
         return stream(req.getPayload()
                 .getText()
-                .split("\\w+"))
+                .split("\\s+"))
                 .reduce((first, second) -> second);
     }
 }
