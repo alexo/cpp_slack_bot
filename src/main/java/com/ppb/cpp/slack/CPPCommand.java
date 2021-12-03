@@ -37,7 +37,8 @@ public class CPPCommand {
     }
 
     private Response unknownQuery(final SlashCommandRequest req) {
-        return req.getContext().ack(":wave: Unknown query. Try *help* for available instructions..");
+        return req.getContext()
+                .ack(res -> res.responseType("in_channel").text(":wave: Hi, this is CPP bot. How can I help you? Start by typing: help"));
     }
 
     @PostConstruct

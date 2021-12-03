@@ -50,8 +50,7 @@ public class PromoCodeQuery implements Query {
 
     private Response responseForPromo(final SlashCommandRequest req, final Promotion promo) {
         return req.getContext()
-                .ack(res -> res.responseType("in_channel")
-                     .blocks(asList(section(section -> firtSection(promo, section)),
+                .ack(res -> res.blocks(asList(section(section -> firtSection(promo, section)),
                         section(section -> secondSection(promo, section)),
                         section(section -> thirdSection(promo, section)))
         ));

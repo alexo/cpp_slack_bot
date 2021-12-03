@@ -27,7 +27,7 @@ public class HelpQuery implements Query {
     @Override
     public Response handle(final SlashCommandRequest req) {
         return req.getContext()
-                .ack(res -> res.responseType("in_channel").blocks(computeHelpResponse(req)));
+                .ack(res -> res.blocks(computeHelpResponse(req)));
     }
 
     private List<LayoutBlock> computeHelpResponse(final SlashCommandRequest req) {

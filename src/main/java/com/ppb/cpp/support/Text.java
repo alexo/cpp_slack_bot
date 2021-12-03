@@ -1,16 +1,20 @@
 package com.ppb.cpp.support;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class Text {
     public static final String REGEX_FIRST_WORD = "(?i)^%s\\b.*";
     private String value;
+
     public Text(final String value) {
-        this.value = value;
+        this.value = value != null ? value : EMPTY;
     }
 
     /**
